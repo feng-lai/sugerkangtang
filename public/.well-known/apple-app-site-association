@@ -1,0 +1,11 @@
+{
+    "applinks": {
+            "apps": [],
+            "details": [
+                {
+                    "appID": "SY5B3H4K8B.com.gymoo.Consultation",
+                    "paths": ["*"]
+                }
+            ]
+    }
+}

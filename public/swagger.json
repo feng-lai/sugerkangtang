@@ -1,0 +1,46 @@
+{
+    "swagger": "2.0",
+    "paths": {
+        "/index": {
+            "get": {
+                "tags": [
+                    "\u7528\u6237\u4fe1\u606f"
+                ],
+                "summary": "Add a new pet to the store",
+                "description": "",
+                "operationId": "read",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "multipart/form-data"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "Pet object that needs to be added to the store",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Pet"
+                        },
+                        "paramType": "form"
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "petstore_auth": [
+                            "write:pets",
+                            "read:pets"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {}
+}

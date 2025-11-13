@@ -1,0 +1,1 @@
+https://sso.bit.edu.cn/cas/login?service=http://127.0.0.1/v1/common/login?url=https://bltt.bit.edu.cn/admin/
