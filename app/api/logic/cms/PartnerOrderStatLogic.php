@@ -67,7 +67,7 @@ class PartnerOrderStatLogic
             }
             Partner::build()->where('user_uuid', $request['user_uuid'])->where('is_deleted',1)->findOrFail();
             $where = ['site_id' => $request['site_id'], 'is_deleted' => 1, 'status' => 2,'user_uuid'=>$request['user_uuid']];
-            $request['order_type'] == 1 ? $where['type'] = ['<>', 3] : $where['level'] = 3;
+            $request['order_type'] == 1 ? $where['type'] = ['not in', [3,4]] : $where['type'] = 3;
             $data = PartnerOrder::build()
                 ->field('
                     order_id,
@@ -77,7 +77,8 @@ class PartnerOrderStatLogic
                     price,
                     commission,
                     product_uuid,
-                    product_attribute_uuid
+                    product_attribute_uuid,
+                    type
                 ')
                 ->where($where)
                 ->paginate(['list_rows' => $request['page_size'], 'page' => $request['page_index']])->each(function ($item) {
@@ -190,6 +191,7 @@ class PartnerOrderStatLogic
                 
                 (select IFNULL(sum(commission),0) as commission from partner_order where 
                 type <> 3 and 
+                type <> 4 and 
                 status = 2 and 
                 user_uuid = r.user_uuid and 
                 site_id = ' . $request['site_id'] . $map . ') as commission,
@@ -202,6 +204,7 @@ class PartnerOrderStatLogic
                  
                 (select IFNULL(sum(commission),0) as commission from partner_order where 
                 status = 2 and 
+                type <> 4 and
                 user_uuid = r.user_uuid and 
                 site_id = ' . $request['site_id'] . $map . ') as total_commission
             ');

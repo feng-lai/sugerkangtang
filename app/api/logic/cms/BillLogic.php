@@ -191,7 +191,7 @@ class BillLogic
             if($request['type']){
                 $where['type'] = $request['type'];
             }else{
-                $where['type'] = ['in',[3,6,7,8,9]];
+                $where['type'] = ['in',[3,6,7,8,9,10]];
             }
         }
         $result = Bill::build()

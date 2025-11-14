@@ -118,6 +118,7 @@ class CommissionOrderLogic
                 ->join('retail r', 'r.uuid = c.retail_uuid', 'left')
                 ->where($where)
                 ->order('c.create_time desc')
+                ->group('c.order_id,c.product_attribute_uuid')
                 ->paginate(['list_rows' => $request['page_size'], 'page' => $request['page_index']])->each(function ($item) {
                     $total_price = round($item['total_price'],2);
                     $item['detail'] = CommissionOrder::build()

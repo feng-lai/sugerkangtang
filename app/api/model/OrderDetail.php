@@ -198,11 +198,11 @@ class OrderDetail extends BaseModel
 
                 if ($partner['type'] == 1) {
                     //合伙人
-                    $commission = $product_attribute->partner;
+                    $commission = $product_attribute->partner?$product_attribute->partner:0;
                     $type = 2;
                 } else {
                     //高级合伙人
-                    $commission = $product_attribute->senior_partner;
+                    $commission = $product_attribute->senior_partner?$product_attribute->senior_partner:0;
                     $type = 1;
                 }
 
@@ -237,6 +237,15 @@ class OrderDetail extends BaseModel
                     PartnerOrder::build()->settlement_outline($v, $partner, 2, $product_attribute);
                 }
 
+                //推荐奖励
+                $commission_order['uuid'] = uuid();
+                $commission_order['commission'] = $product_attribute->partner_invite?$product_attribute->partner_invite*$v['qty']:0;
+                $commission_order['level'] = 1;
+                $commission_order['type'] = 4;
+                PartnerOrder::build()->save($commission_order);
+                //推荐奖励结算
+                PartnerOrder::build()->settlement($commission_order);
+
 
                 //间推
                 $user = User::build()->where('uuid', $partner->user_uuid)->find();
@@ -249,14 +258,35 @@ class OrderDetail extends BaseModel
                             $commission_order['user_uuid'] = $val['uuid'];
                             $partner = Partner::build()->where('user_uuid', $val['uuid'])->find();
                             $commission_order['partner_uuid'] = $partner->uuid;
-                            $commission_order['commission'] = $product_attribute->partner_two * $v['qty'];
-                            $commission_order['level'] = 2;
+                            $commission_order['commission'] = $product_attribute->partner_two?$product_attribute->partner_two * $v['qty']:0;
                             $commission_order['type'] = 3;
                             $commission_order['status'] = 1;
+                            $commission_order['level'] = 2;
                             //2+1分销间推订单
                             PartnerOrder::build()->save($commission_order);
                             break;
                         }
+                    }
+                }
+
+                //间推的推荐奖励
+                if ($data) {
+                    $level = 2;
+                    foreach ($data as $k => $val) {
+                        //第一个高级合伙人间推
+                        $commission_order['uuid'] = uuid();
+                        $commission_order['user_uuid'] = $val['uuid'];
+                        $partner = Partner::build()->where('user_uuid', $val['uuid'])->find();
+                        $commission_order['partner_uuid'] = $partner->uuid;
+                        $commission_order['commission'] = $product_attribute->partner_two?$product_attribute->partner_two * $v['qty']:0;
+                        $commission_order['level'] = $level;
+                        $commission_order['type'] = 4;
+                        $commission_order['status'] = 2;
+                        //邀请奖励
+                        PartnerOrder::build()->save($commission_order);
+                        //推荐奖励结算
+                        PartnerOrder::build()->settlement($commission_order);
+                        $level++;
                     }
                 }
             }

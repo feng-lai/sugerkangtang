@@ -70,7 +70,7 @@ class Product extends Api
             'attribute',
             'effect',
             'suitable_for',
-            'product_type',
+            'product_type'
         ]);
         $this->check($request, "Product.save");
         $result = ProductLogic::cmsAdd($request, $this->userInfo);
@@ -102,7 +102,7 @@ class Product extends Api
             'attribute',
             'effect',
             'suitable_for',
-            'product_type',
+            'product_type'
         ]);
         $request['uuid'] = $id;
         $this->check($request, "Product.save");

@@ -28,6 +28,9 @@ class PartnerOrder extends BaseModel
             if($commission_order['type'] == 3){
                 $type = 9;
             }
+            if($commission_order['type'] == 4){
+                $type = 10;
+            }
             //账单
             Bill::build()->insert([
                 'uuid' => uuid(),

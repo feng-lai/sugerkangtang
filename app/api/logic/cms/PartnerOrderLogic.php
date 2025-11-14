@@ -118,6 +118,7 @@ class PartnerOrderLogic
                 ->join('partner r', 'r.user_uuid = c.user_uuid and r.is_deleted = 1', 'left')
                 ->where($where)
                 ->order('c.create_time desc')
+                ->group('c.order_id,c.product_attribute_uuid')
                 ->paginate(['list_rows' => $request['page_size'], 'page' => $request['page_index']])->each(function ($item) {
                     $total_price = round($item['total_price'],2);
                     $detail = PartnerOrder::build()
@@ -126,7 +127,7 @@ class PartnerOrderLogic
                         ->join('partner r', 'r.user_uuid = c.user_uuid', 'left')
                         ->where('c.order_id', $item['order_id'])
                         ->where('c.product_attribute_uuid', $item['product_attribute_uuid'])
-                        ->order('c.level asc')
+                        ->order('c.type asc')
                         ->select()->each(function ($item) use ($total_price) {
                             $item['type'] = $item['type']+1;
                             $item['persent'] = round($item['commission'] / $total_price * 100,2);
